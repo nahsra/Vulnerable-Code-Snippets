@@ -4,3 +4,4 @@ A collection of vulnerable code snippets taken form around the internet. Snippet
 
 
 **Note: This is not a good benchmark for testing static analysis tools, they are broken code snippets, with missing imports and missing files.** 
+test
