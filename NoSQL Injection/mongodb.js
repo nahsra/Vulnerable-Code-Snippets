@@ -1,9 +1,17 @@
 const express = require('express');
 const config = require('../config')
 const router = express.Router()
+const rateLimit = require('express-rate-limit');
 
 const MongoClient = require('mongodb').MongoClient;
 const url = config.MONGODB_URI;
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+
+router.use(apiLimiter);
 
 router.post('/customers/register', async (req, res) => {
 
@@ -25,8 +33,6 @@ router.post('/customers/register', async (req, res) => {
     
 })
 
-
-// Vulnerable search function
 router.post('/customers/find', async (req, res) => {
 
     const client = await MongoClient.connect(url, { useNewUrlParser: true })
@@ -47,10 +53,6 @@ router.post('/customers/find', async (req, res) => {
 
   
 })
-
-// Vulnerable Authentication
-// Authentication Bypass Example
-// curl -X POST http://localhost:3000/customers/login/ --data "{\"email\": {\"\$gt\":\"\"} , \"password\": {\"\$gt\":\"\"}}" -H "Content-Type: application/json"
 
 router.post('/customers/login', async (req, res) => {
 
